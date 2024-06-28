@@ -13,11 +13,6 @@ pip3 install -r requirements.txt
 python3 main.py
 ```
 
-```sh
-cd game
-python3 main.py
-```
-
 # App Proyect
 
 ```sh
@@ -26,5 +21,12 @@ cd app
 python3 -m venv env
 source env/bin/activate
 pip3 install -r requirements.txt
+python3 main.py
+```
+
+# Game Rock,Paper, Scizors
+
+```sh
+cd game
 python3 main.py
 ```
