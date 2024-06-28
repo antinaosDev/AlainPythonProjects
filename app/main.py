@@ -2,7 +2,6 @@ import charts
 import country_pop
 import read_csv
 
-
 def run_bar_chart():
   #Se realiza la lectura del documento
   data = read_csv.read_csv('data_pop.csv')
