@@ -1,8 +1,8 @@
 # Python Projects
 
-Para correr algunos de los proyectos siga las siguientes intrucciones en la terminal:
+Para correr alguno de los proyectos siga las siguientes intrucciones en la terminal:
 
-# Agroclimatic Risk Proyect
+# Agroclimatic Risk Project
 
 ```sh
 git clone
@@ -13,7 +13,7 @@ pip3 install -r requirements.txt
 python3 main.py
 ```
 
-# App Proyect
+# App Project
 
 ```sh
 git clone
@@ -24,7 +24,7 @@ pip3 install -r requirements.txt
 python3 main.py
 ```
 
-# Game Rock,Paper, Scizors
+# Game Rock,Paper,Scizors
 
 ```sh
 cd game
