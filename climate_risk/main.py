@@ -25,12 +25,12 @@ def run():
         Chart.bar_chart(labels,Values,año)
     
     else:
-        c_region = input('Quieres consultar los registros de alguna region? (y/n): ').upper().strip()
+        c_region = input('\nQuieres consultar los registros de alguna region? (y/n): ').upper().strip()
         
         if c_region == 'Y':
             var1,var2,var3,var4,lista_regiones = region
             print('\nlas Regiones son las siguientes:',sorted(lista_regiones,reverse=False))
-            region_S = input('Ingrese la region a analizar: ').upper().strip()
+            region_S = input('\nIngrese la region a analizar: ').upper().strip()
             labels_r,values_r,var3,var4,var5 = Risk_per_region.risk_region(data,region_S)
             datos_r = list(zip(labels_r,values_r))
             
@@ -43,13 +43,13 @@ def run():
             Chart.bar_chart(labels_r,values_r,region_S)
             
             
-            c_town = input(f'Quieres consultar los registros alguna comuna de la región {region_S}? (y/n): ').upper().strip()
+            c_town = input(f'\nQuieres consultar los registros alguna comuna de la región {region_S}? (y/n): ').upper().strip()
             
             if c_town == 'Y':
                 var1,var2,comunas = Risk_per_town.risk_town(Risk_per_region.risk_region(data,region_S),'Cholchol')
                 print('\nlas Comunas son las siguientes:',comunas)  
-                comuna_t = input('Ingrese la comuna a analizar: ')
-                labels_t,values_t,var3 = Risk_per_town.risk_town(region,comuna_t)
+                comuna_t = input('\nIngrese la comuna a analizar: ')
+                labels_t,values_t,var3 = Risk_per_town.risk_town(Risk_per_region.risk_region(data,region_S),comuna_t)
                 datos_t = list(zip(labels_t,values_t))
                 print('\nComuna analizada:',comuna_t)
                 print('-'*25)

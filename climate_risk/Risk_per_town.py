@@ -6,10 +6,6 @@ def risk_town(func_reg,comuna_c):
     
     length_region = len(list(region))
     
-    lista_comunas = []
-    for i in range(length_region):
-         comuna = region[i]['Comuna']
-         lista_comunas.append(comuna)
         
     riesgos = []
     for i in range(length_region):
@@ -27,7 +23,12 @@ def risk_town(func_reg,comuna_c):
         if comuna == comuna_c and riesgo in riesgos:
             contador += 1
             dict_inc[riesgo] = contador
-        
+   
+    lista_comunas = []
+    for i in range(length_region):
+         comuna = region[i]['Comuna']
+         lista_comunas.append(comuna)
+             
         
     lables = dict_inc.keys()
     values = dict_inc.values()
@@ -37,6 +38,6 @@ def risk_town(func_reg,comuna_c):
 
 if __name__ == '__main__':
     data = read_csv.read_csv('agro_emergency.csv')
-    region = Risk_per_region.risk_region(data,'IX')
-    comuna = risk_town(region,'Cholchol')
+    region = Risk_per_region.risk_region(data,'III')
+    comuna = risk_town(region,'Huasco')
     print(comuna)
