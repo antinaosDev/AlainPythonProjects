@@ -1,16 +1,11 @@
+import pandas as pd
+
+
 def read_csv(path):
-    import csv
-    with open(path,'r',encoding='latin-1') as csv_file:
-        read = csv.reader(csv_file,delimiter=';')
-        header = next(read)
-        data_list = []
-        
-        for row in read:
-            iterable = zip(header,row)
-            dict = {key:value for key,value in iterable}
-            data_list.append(dict)
-            
-    return data_list
+    #Se realiza la lectura del csv
+    data = pd.read_csv(path,encoding='latin-1',sep=';')
+    
+    return data
 
 if __name__ == '__main__':
     data = read_csv('agro_emergency.csv')

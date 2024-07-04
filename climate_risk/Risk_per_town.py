@@ -1,43 +1,17 @@
-import Risk_per_region
+import pandas as pd
 import read_csv
 
-def risk_town(func_reg,comuna_c):
-    var1,var2,region,var3,var4 = func_reg
+def risk_comuna(data,region):
+    data_r = data[data['Region'] == region]
+    data_comuna = data_r.groupby(['Comuna','Sit']).agg({'Sit':'count'})
+    data_comuna = data_comuna.rename(columns = {'Sit':'count_sit_comuna'}).reset_index().sort_values('count_sit_comuna',ascending = False)
     
-    length_region = len(list(region))
+    comuna_list = sorted(data_r['Comuna'].unique().tolist(),reverse=False)
     
-        
-    riesgos = []
-    for i in range(length_region):
-        riesgo  = region[i]['Sit']
-        comuna = region[i]['Comuna']
-        if comuna == comuna_c:
-            riesgos.append(riesgo)
+    return data_comuna,comuna_list  
 
-    
-    contador = 0
-    dict_inc = {}
-    for j in range(length_region):
-        riesgo  = region[j]['Sit']
-        comuna = region[j]['Comuna']
-        if comuna == comuna_c and riesgo in riesgos:
-            contador += 1
-            dict_inc[riesgo] = contador
-   
-    lista_comunas = []
-    for i in range(length_region):
-         comuna = region[i]['Comuna']
-         lista_comunas.append(comuna)
-             
-        
-    lables = dict_inc.keys()
-    values = dict_inc.values()
-    comunas = list(set(lista_comunas))
-    
-    return lables,values,comunas
 
 if __name__ == '__main__':
     data = read_csv.read_csv('agro_emergency.csv')
-    region = Risk_per_region.risk_region(data,'III')
-    comuna = risk_town(region,'Huasco')
+    comuna= risk_comuna(data,'IX')
     print(comuna)

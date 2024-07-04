@@ -1,72 +1,165 @@
 import read_csv
+import matplotlib.pyplot as plt
+import os
 import Chart
 import Risk_per_region
 import Risk_per_town
 import Risk_per_year
+import risk_year_region_com
 
 def run():
     data = read_csv.read_csv('agro_emergency.csv')
-    c_año = input('Quieres consultar los riesgos de un año en especifico (y/n): ').upper().strip()
-    region = Risk_per_region.risk_region(data,'IX')
+    data_year = Risk_per_year.risk_year(data)
+    year_list = sorted(data_year['Año'].unique().tolist(),reverse=False)
+    data_region = Risk_per_region.risk_region(data)
+    region_list = sorted(data_region['Region'].unique().tolist(),reverse=False)
+    data_comuna,comuna_list = Risk_per_town.risk_comuna(data,'IX')
     
-    if c_año == 'Y':
-        var1,var2,lista_años = Risk_per_year.risk_year(region,2010)
-        print('Los meses son los siguientes:',sorted(lista_años,reverse=False))
-        año = int(input('Ingrese el año a analizar: '))
-        
-        labels,Values,lista_años = Risk_per_year.risk_year(region,año)
-        datos = list(zip(labels,Values))
-        print('\nAño analizado:',año)
-        print('-'*25)
-        for i in range(len(datos)):
-            print(datos[i])
-        print('-'*25)
-        
-        Chart.bar_chart(labels,Values,año)
     
+    print('*'*90)
+    print('Bienvenido al programa que genera datos estadísticos sobre riesgos agroclimaticos')
+    print('*'*90)
+    
+    choice = ('Y','N')
+    consulta = input('Quieres realizar un analisis por año? (y/n): ').upper().strip()
+    
+    while consulta not in choice:
+        print('Ingrese una opción válida \n')
+        consulta = input('Quieres realizar un analisis por año? (y/n): ').upper().strip()
     else:
-        c_region = input('\nQuieres consultar los registros de alguna region? (y/n): ').upper().strip()
-        
-        if c_region == 'Y':
-            var1,var2,var3,var4,lista_regiones = region
-            print('\nlas Regiones son las siguientes:',sorted(lista_regiones,reverse=False))
-            region_S = input('\nIngrese la region a analizar: ').upper().strip()
-            labels_r,values_r,var3,var4,var5 = Risk_per_region.risk_region(data,region_S)
-            datos_r = list(zip(labels_r,values_r))
+        if consulta == 'Y':
+            print(f'La lista de años es: {year_list}')
+            consulta = int(input('Indique el año a consultar: '))
             
-            print('\nRegión analizada:',region_S)
-            print('-'*25)
-            for i in range(len(datos_r)):
-                print(datos_r[i])
-            print('-'*25)
-            
-            Chart.bar_chart(labels_r,values_r,region_S)
-            
-            
-            c_town = input(f'\nQuieres consultar los registros alguna comuna de la región {region_S}? (y/n): ').upper().strip()
-            
-            if c_town == 'Y':
-                var1,var2,comunas = Risk_per_town.risk_town(Risk_per_region.risk_region(data,region_S),'Cholchol')
-                print('\nlas Comunas son las siguientes:',comunas)  
-                comuna_t = input('\nIngrese la comuna a analizar: ')
-                labels_t,values_t,var3 = Risk_per_town.risk_town(Risk_per_region.risk_region(data,region_S),comuna_t)
-                datos_t = list(zip(labels_t,values_t))
-                print('\nComuna analizada:',comuna_t)
-                print('-'*25)
-                for i in range(len(datos_t)):
-                    print(datos_t[i])
-                print('-'*25)
-                
-                Chart.bar_chart(labels_t,values_t,comuna_t)
-                    
+            while consulta not in year_list:
+                print('Ingrese una opción válida \n')
+                print(f'La lista de años es: {year_list}')
+                consulta = int(input('Indique el año a consultar: '))
             else:
-                return 'Se cierra programa'
+                year = data_year[data_year['Año'] == consulta] 
+                labels = year['Sit'].tolist()
+                values = year['count_sit_year'].tolist()
+                df = year[['Sit','count_sit_year']]
+                print(df)
+                Chart.bar_chart(labels,values,consulta)
+                
+            
         else:
-            return 'Se cierra programa'
-    
-
-    
-        
+            consulta = input('Quieres realizar un analisis historico por región? (y/n): ').upper().strip()
+            
+            while consulta not in choice:
+                print('Ingrese una opción válida \n')
+                consulta = input('Quieres realizar un analisis historico por región? (y/n): ').upper().strip()
+            else:
+                if consulta == 'Y':
+                    print(f'La lista de regiones es: {region_list}')
+                    consulta = input('Indique la región a consultar: ')
+                    
+                    while consulta not in region_list:
+                        print('Ingrese una opción válida \n')
+                        print(f'La lista de regiones es: {region_list}')
+                        consulta = input('Indique la región a consultar: ')
+                    else:
+                        region = data_region[data_region['Region'] == consulta]
+                        labels = region['Sit'].tolist()
+                        values = region['count_sit_r'].tolist()
+                        df = region[['Sit','count_sit_r']]
+                        print(df)
+                        Chart.bar_chart(labels,values,consulta)
+                    
+                else:
+                    consulta = input('Quieres realizar un analisis anual por región? (y/n): ').upper().strip()
+                    
+                    while consulta not in choice:
+                        print('Ingrese una opción válida \n')
+                        consulta = input('Quieres realizar un analisis anual por región? (y/n): ').upper().strip()
+                    else:
+                        if consulta == 'Y':
+                            print(f'La lista de años es: {year_list}')
+                            consulta_año = int(input('Indique el año a consultar: '))
+                            print(f'La lista de regiones es: {region_list}')
+                            consulta_r = input('Indique la región a consultar: ')
+                            
+                            while consulta_año not in year_list or consulta_r not in region_list:
+                                print('Ingrese opciones válidas \n')
+                                print(f'La lista de años es: {year_list}')
+                                consulta_año = int(input('Indique el año a consultar: '))
+                                print(f'La lista de regiones es: {region_list}')
+                                consulta_r = input('Indique la región a consultar: ')
+                            else:
+                                filter_year_region,filter_y_r_comuna,list = risk_year_region_com.comb_risk(data,consulta_año,consulta_r,'Cholchol')
+                                labels = filter_year_region['Sit'].tolist()
+                                values = filter_year_region['count'].tolist()
+                                df = filter_year_region[['Region','Año','Sit','count']]
+                                print(df)
+                                Chart.bar_chart(labels,values,consulta_r)
+                    
+                        
+                        else:
+                            consulta = input('Quieres realizar un analisis por comuna? (y/n): ').upper().strip()
+                            
+                            while consulta not in choice:
+                                print('Ingrese una opción válida \n')
+                                consulta = input('Quieres realizar un analisis historico por comuna? (y/n): ').upper().strip()
+                            else:
+                                if consulta == 'Y':
+                                    print(f'La lista de regiones es: {region_list}')
+                                    consulta_r = input('Indique la región de la comuna a consultar: ')
+                                    comuna_bd,lista_c = Risk_per_town.risk_comuna(data,consulta_r)
+                                    print(f'La lista de comunas es: {lista_c}')
+                                    consulta = input('Indique la comuna a consultar: ')
+                                    
+                                    while consulta_r not in region_list or consulta not in lista_c:
+                                        print('Ingrese una opción válida \n')
+                                        print(f'La lista de regiones es: {region_list}')
+                                        consulta_r = input('Indique la región de la comuna a consultar: ')
+                                        comuna,lista_c = Risk_per_town.risk_comuna(data,consulta_r)
+                                        print(f'La lista de comunas es: {lista_c}')
+                                        consulta = input('Indique la comuna a consultar: ')
+                                    else:
+                                        comuna = comuna_bd[comuna_bd['Comuna'] == consulta]
+                                        labels = comuna['Sit'].tolist()
+                                        values = comuna['count_sit_comuna'].tolist()
+                                        df = comuna[['Sit','count_sit_comuna']]
+                                        print(df)
+                                        Chart.bar_chart(labels,values,consulta)
+                                        
+                                else:
+                                    consulta = input('Quieres realizar un analisis anual por comuna? (y/n): ').upper().strip()
+                                    
+                                    while consulta not in choice:
+                                        print('Ingrese una opción válida \n')
+                                        consulta = input('Quieres realizar un analisis anual por comuna? (y/n): ').upper().strip()
+                                    else:
+                                        if consulta == 'Y':
+                                            print(f'La lista de años es: {year_list}')
+                                            consulta_año = int(input('Indique el año a consultar: '))
+                                            lista_comuna = sorted(data['Comuna'].unique().tolist(),reverse=False)
+                                            print(f'La lista de comunas es: {lista_comuna}')
+                                            consulta = input('Indique la comuna a consultar: ')
+                                            
+                                            while consulta not in lista_comuna or consulta_año not in year_list:
+                                                print('Ingrese una opción válida \n')
+                                                print(f'La lista de años es: {year_list}')
+                                                consulta_año = int(input('Indique el año a consultar: '))
+                                                lista_comuna = sorted(data['Comuna'].unique().tolist(),reverse=False)
+                                                print(f'La lista de comunas es: {lista_comuna}')
+                                                consulta = input('Indique la comuna a consultar: ')
+                                            else:
+                                                filter_year_region,filter_y_r_comuna,list = risk_year_region_com.comb_risk(data,consulta_año,'IX',consulta)
+                                                labels = filter_y_r_comuna['Sit'].tolist()
+                                                values = filter_y_r_comuna['count'].tolist()
+                                                df = filter_y_r_comuna[['Comuna','Año','Sit','count']]
+                                                print(df)
+                                                Chart.bar_chart(labels,values,consulta)
+                                        
+                                        else:
+                                            return 'Gracias por utilizar el software'
+                                                
+                                    
+                                            
+                                        
+                                        
 if __name__ == '__main__':
     print(run())
     
