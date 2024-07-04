@@ -8,7 +8,7 @@ Para correr alguno de los proyectos siga las siguientes intrucciones en la termi
 git clone
 cd appclimate_risk
 python3 -m venv env
-source env/bin/activate
+source venv/bin/activate
 pip3 install -r requirements.txt
 python3 main.py
 ```
